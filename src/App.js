@@ -8,135 +8,97 @@ import { Radio, RadioGroup, Stack, Checkbox } from '@chakra-ui/react'
 import { Select, Box } from '@chakra-ui/react'
 import { SimpleGrid } from '@chakra-ui/react'
 
+(function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function App() {
-  const campaignsURL = "https://apigw.mweb.co.za/prod/baas/proxy/marketing/campaigns/fibre?channels=120&visibility=public"
-  const promcodeProductsURL = "https://apigw.mweb.co.za/prod/baas/proxy/marketing/products/promos/"
-  const [campaignsData, setCampaignData] = useState([])
-  const [promcodeProducts, setPromcodeProducts] = useState([])
-  const [summarizedProducts, setSuummarizedProducts] = useState([])
-  const [providers, setProviders] = useState(["Vuma Reach"])
-  const [value, setValue] = useState(JSON.stringify(["FTTH-MITCHELLS-PREPAID-AMBER", "VUMA-REACH-RECURRING", "VUMA-REACH-28DAY-SERVICE", "VUMA-REACH-28DAY-SERVICE-40MBPS"]))
-  const [valued, setValued] = useState()
-  const [selectedProducts, setSelectedProducts] = useState([])
-  const [selectedProviders, setSelectedProviders] = useState([])
-
-  const getData = async () => {
-    await axios.get(campaignsURL).then(response => {
-      setCampaignData(response.data.campaigns)
-
-    }).catch(function (response) {
-
-      console.log(response);
-    })
-  }
-
-  const getDefaulfData = async (value) => {
-    await axios.get(`${promcodeProductsURL}` + JSON.parse(value).join(',') + `?sellable_online=true`).then(async response => {
-      await setPromcodeProducts(response.data)
-    })
-  }
-  const setAll = () => {
-    const praid = promcodeProducts.reduce((prods, pc) => [...prods, ...getProductsFromPromo(pc)], [])
-    setSuummarizedProducts(praid)
-  }
-
-  useEffect(() => {
-
-    getData()
-    getDefaulfData(value)
-
-  }, []);
-  useEffect(() => {
-
-    setAll()
-
-  }, [promcodeProducts])
-
-  useEffect(() => {
-    setProviders([...new Set(summarizedProducts.map(p => p.provider))])
-  }, [summarizedProducts])
-
-
-  //#endregion
-  const getSummarizedProduct = ({ productCode, productName, productRate, subcategory }) => {
-    const provider = subcategory.replace('Uncapped', '').replace('Capped', '').trim()
-    return { productCode, productName, productRate, provider }
-  }
-
-  const getProductsFromPromo = (pc) => {
-    const promoCode = pc.promoCode
-    return pc.products.reduce((prods, p) => [...prods, getSummarizedProduct(p)], [])
-  }
-
-  const onChange = async (data) => {
-    setValue(data)
-    setSelectedProducts([])
-    if (data && data !== '1') {
-      await axios.get(`${promcodeProductsURL}` + JSON.parse(data).join(',') + `?sellable_online=true`).then(async response => {
-        await setPromcodeProducts(response.data)
-        await setSuummarizedProducts(promcodeProducts.reduce((prods, pc) => [...prods, ...getProductsFromPromo(pc)], []))
-        let provd = providers
-        console.log(provd)
-        let something = [...new Set(summarizedProducts.map(p => p.provider))]
-        console.log(something)
-        let newCls = [...provd, ...something]
-        await setProviders(newCls)
-
-      }).catch(function (response) {
-        console.log(response);
-      })
-
-    }
-  }
-
-
-
-  const onChangeSelectedProducts = (valued) => {
-
-    setSelectedProviders([JSON.parse(valued.target.value)])
-  }
-
-  const newFunction = () => {
-    const selectedProviderSet = new Set(selectedProviders)
-
-    let selectedProducts = summarizedProducts.filter(p => selectedProviderSet.has(p.provider))
-
-    setSelectedProducts(selectedProducts.sort((pa, pb) => pa.productRate - pb.productRate))
-  }
-
-  useEffect(() => {
-    newFunction()
-  }, [selectedProviders])
-
-  const onPriceRangeChange = (event) => {
-
-    let selectedPriceRangeLabels = event.target.value
-
-    let selectedPriceRanges = priceRange.filter(range => selectedPriceRangeLabels.includes(range.label))
-
-    const filterByPriceRanges = (product) => {
-      // If no price range has been selected then include all products
-      if (selectedPriceRanges.length === 0) {
-        return true
-      }
-
-      for (const range of selectedPriceRanges) {
-        const price = product.productRate
-        if (price >= range.min && price <= range.max) {
-          return true
-        }
-      }
-
-      return false
-    }
-
-    setSelectedProducts(selectedProducts.filter(filterByPriceRanges))
-  }
-
-  return (
-    <>
-      <SimpleGrid>
+<SimpleGrid>
         <Box m={3}>
           <h3>Select Fibre Campaign</h3>
           <RadioGroup onChange={onChange} value={value} >
@@ -171,3 +133,4 @@ function App() {
 }
 
 export default App;
+
