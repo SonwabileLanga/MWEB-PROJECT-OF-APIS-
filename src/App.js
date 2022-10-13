@@ -36,6 +36,14 @@ import { SimpleGrid } from '@chakra-ui/react'
 /******/ 		return module.exports;
 /******/ 	}
 /******/
+function App() {
+  const campaignsURL = "https://apigw.mweb.co.za/prod/baas/proxy/marketing/campaigns/fibre?channels=120&visibility=public"
+  const promcodeProductsURL = "https://apigw.mweb.co.za/prod/baas/proxy/marketing/products/promos/"
+  const [campaignsData, setCampaignData] = useState([])
+  const [promcodeProducts, setPromcodeProducts] = useState([])
+  const [summarizedProducts, setSuummarizedProducts] = useState([])
+  const [providers, setProviders] = useState(["lightstruck"])
+  const [value, setValue] = useState(JSON.stringify(["FTTH-VODA-CLAWBACK-100MBUP","FTTH-FROG-M2M-SETUP-CLAWBACK-100MBUP","VUMA-REACH-RECURRING", "VUMA-REACH-28DAY-SERVICE", "VUMA-REACH-28DAY-SERVICE-40MBPS"]))
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
